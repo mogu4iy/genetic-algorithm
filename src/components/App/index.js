@@ -5,8 +5,8 @@ import {
 } from "../../storage/AppStatus";
 import ParametersForm from "../ParametersForm";
 import FinishScreen from "../FinishScreen";
-import Cities from "../Cities";
-import Genetic from "../Genetic";
+import GeneticCities from "../GeneticCities";
+import CreateCitiesStage from "../CreateCitiesStage";
 
 const App = () => {
     const appStatusContext = useContext(AppStatusContext)
@@ -19,11 +19,11 @@ const App = () => {
                 )
             case appStatus.PARAMETERS_SUBMITTED:
                 return (
-                    <Cities/>
+                    <CreateCitiesStage/>
                 )
             case appStatus.CITIES_CREATED:
                 return (
-                    <Genetic/>
+                    <GeneticCities/>
                 )
             case appStatus.FINISHED:
                 return (

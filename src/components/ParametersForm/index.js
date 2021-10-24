@@ -5,7 +5,7 @@ import {
     appSubmitParametersAction
 } from "../../storage/AppStatus";
 import {
-    AppParametersContext,
+    AppParametersContext, INPUT_TYPES,
     updateAppParameters
 } from "../../storage/AppParameters";
 
@@ -40,33 +40,74 @@ const ParametersForm = () => {
         initialValues: initialValues(),
         validate: validateValues,
         onSubmit: values => {
-            console.log(JSON.stringify(values));
             appStatusContext.dispatch(appSubmitParametersAction)
             appParametersContext.dispatch(updateAppParameters(values))
         },
     });
+
+    const inputSwitch = (field) => {
+        switch (field.inputType) {
+            case INPUT_TYPES.TEXT:
+                return (
+                    <input
+                        id={`input-${field.name}`}
+                        name={field.name}
+                        type={field.inputType}
+                        value={formik.values[field.name]}
+                        onChange={formik.handleChange}
+                    />
+                )
+            case INPUT_TYPES.SELECT:
+                return (
+                    <select
+                        id={`input-${field.name}`}
+                        name={field.name}
+                        value={formik.values[field.name]}
+                        onChange={formik.handleChange}
+                    >
+                        {field.options.map(option => {
+                            return (
+                                <option value={option}>{option}</option>
+                            )
+                        })}
+                    </select>
+                )
+        }
+    }
     return (
         <>
             <form onSubmit={formik.handleSubmit} className={'parameters-form'}>
                 {
                     Object.values(appParametersContext.state).map(field => {
                         return (
-                            <div className='parameters-form-item'>
-                                {field.name}
-                                <label
-                                    htmlFor={`input-${field.name}`}
-                                >
-                                    {field.name[0].toUpperCase() + field.name.slice(1)}
-                                </label>
-                                <input
-                                    id={`input-${field.name}`}
-                                    name={field.name}
-                                    type={field.inputType}
-                                    value={formik.values[field.name]}
-                                    onChange={formik.handleChange}
-                                />
-                                {formik.errors[field.name]}
-                            </div>
+                            <>
+                                {
+                                    field.case ? (
+                                        Object.keys(field.case).map(fieldCase => {
+                                            return formik.values[fieldCase] === field.case[fieldCase]
+                                        }).every(value => value) && (
+                                            <div className='parameters-form-item'>
+                                                <label
+                                                    htmlFor={`input-${field.name}`}
+                                                >
+                                                    {field.name[0].toUpperCase() + field.name.slice(1)}
+                                                </label>
+                                                {inputSwitch(field)}
+                                                {formik.errors[field.name]}
+                                            </div>
+                                        )) : (
+                                        <div className='parameters-form-item'>
+                                            <label
+                                                htmlFor={`input-${field.name}`}
+                                            >
+                                                {field.name[0].toUpperCase() + field.name.slice(1)}
+                                            </label>
+                                            {inputSwitch(field)}
+                                            {formik.errors[field.name]}
+                                        </div>
+                                    )
+                                }
+                            </>
                         )
                     })
                 }
