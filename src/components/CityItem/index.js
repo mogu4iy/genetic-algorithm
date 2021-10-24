@@ -8,8 +8,8 @@ const CityItem = ({city}) => {
         <Circle
             fill={city.color}
             radius={city.size.radius}
-            x={city.position.x * citiesCanvasContext.state.width}
-            y={city.position.y * citiesCanvasContext.state.height}
+            x={city.position.x}
+            y={city.position.y}
         />
     )
 }

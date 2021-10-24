@@ -20,6 +20,7 @@ const CreateCitiesStage = () => {
     const appParametersContext = useContext(AppParametersContext)
     const citiesCanvasContext = useContext(CitiesCanvasContext)
     const algorithmDataContext = useContext(AlgorithmDataContext)
+    console.log(appParametersContext.state)
 
     const createCity = ({x, y}) => {
         return {
@@ -28,7 +29,7 @@ const CreateCitiesStage = () => {
                 y: y / citiesCanvasContext.state.height
             },
             size: {
-                radius: 1 / citiesConfig.circle.radius,
+                radius: 1 / appParametersContext.state.cities,
             },
             color: citiesConfig.circle.color,
             name: algorithmDataContext.state.cities.length

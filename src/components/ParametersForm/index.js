@@ -5,7 +5,9 @@ import {
     appSubmitParametersAction
 } from "../../storage/AppStatus";
 import {
-    AppParametersContext, INPUT_TYPES,
+    AppParametersContext,
+    CONFIG as appParametersConfig,
+    INPUT_TYPES,
     updateAppParameters
 } from "../../storage/AppParameters";
 
@@ -17,13 +19,13 @@ const ParametersForm = () => {
     const initialValues = useCallback(() => {
         const values = {}
         Object.keys(appParametersContext.state).forEach(field => {
-            values[field] = appParametersContext.state[field].value
+            values[field] = appParametersContext.state[field]
         })
         return values
     }, [])
     const validateValues = (values) => {
         const errors = {}
-        Object.values(appParametersContext.state).forEach(field => {
+        Object.values(appParametersConfig).forEach(field => {
             const regexValidation = new RegExp(field.regex)
             if (!values[field.name]) {
                 errors[field.name] = `${field.name} is required`
@@ -40,14 +42,25 @@ const ParametersForm = () => {
         initialValues: initialValues(),
         validate: validateValues,
         onSubmit: values => {
-            appStatusContext.dispatch(appSubmitParametersAction)
+            console.log(values)
             appParametersContext.dispatch(updateAppParameters(values))
+            appStatusContext.dispatch(appSubmitParametersAction)
         },
     });
 
     const inputSwitch = (field) => {
         switch (field.inputType) {
             case INPUT_TYPES.TEXT:
+                return (
+                    <input
+                        id={`input-${field.name}`}
+                        name={field.name}
+                        type={field.inputType}
+                        value={formik.values[field.name]}
+                        onChange={formik.handleChange}
+                    />
+                )
+            case INPUT_TYPES.NUMBER:
                 return (
                     <input
                         id={`input-${field.name}`}
@@ -78,7 +91,7 @@ const ParametersForm = () => {
         <>
             <form onSubmit={formik.handleSubmit} className={'parameters-form'}>
                 {
-                    Object.values(appParametersContext.state).map(field => {
+                    Object.values(appParametersConfig).map(field => {
                         return (
                             <>
                                 {

@@ -7,7 +7,8 @@ export const ACTIONS = {
 }
 export const INPUT_TYPES = {
     TEXT: 'text',
-    SELECT: 'select'
+    SELECT: 'select',
+    NUMBER: 'number'
 }
 export const TYPES = {
     NUMBER: 'number',
@@ -33,9 +34,9 @@ export const VALUES = {
     mutation: 10
 }
 
-export const appParametersInitialState = {
+export const CONFIG = {
     iterations: {
-        inputType: INPUT_TYPES.TEXT,
+        inputType: INPUT_TYPES.NUMBER,
         type: TYPES.NUMBER,
         name: NAMES.iterations,
         value: VALUES.iterations,
@@ -50,7 +51,7 @@ export const appParametersInitialState = {
         options: Object.values(VALUES.cities_creation)
     },
     cities: {
-        inputType: INPUT_TYPES.TEXT,
+        inputType: INPUT_TYPES.NUMBER,
         type: TYPES.NUMBER,
         name: NAMES.cities,
         value: VALUES.cities,
@@ -60,7 +61,7 @@ export const appParametersInitialState = {
         }
     },
     mutation: {
-        inputType: INPUT_TYPES.TEXT,
+        inputType: INPUT_TYPES.NUMBER,
         type: TYPES.NUMBER,
         name: NAMES.mutation,
         value: VALUES.mutation,
@@ -68,12 +69,19 @@ export const appParametersInitialState = {
     },
 }
 
+export const appParametersInitialState = {
+    iterations: VALUES.iterations,
+    cities_creation: VALUES.cities_creation.RANDOM,
+    cities: VALUES.cities,
+    mutation: VALUES.mutation,
+}
+
 export const appParametersReducer = (state, action) => {
     const newState = JSON.parse(JSON.stringify(state))
     switch (action.type) {
         case ACTIONS.UPDATE:
             Object.keys(state).forEach(field => {
-                action.data[field] && (newState[field].value = action.data[field].value)
+                action.data[field] && (newState[field] = action.data[field])
             })
             return newState
         default:
@@ -82,16 +90,12 @@ export const appParametersReducer = (state, action) => {
 }
 
 export const updateAppParameters = (data) => {
+    const updateData = {}
+    Object.keys(data).forEach(field => {
+        updateData[field] = data[field]
+    })
     return {
         type: ACTIONS.UPDATE,
-        data: {
-            ...Object.keys(data).map(field => {
-                return {
-                    field: {
-                        value: data[field]
-                    }
-                }
-            })
-        }
+        data: updateData
     }
 }
