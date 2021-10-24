@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import {AppStatusContext} from "../../storage/AppStatus";
 import {AppParametersContext} from "../../storage/AppParameters";
 import {CitiesCanvasContext} from "../../storage/CitiesCanvas";
@@ -12,9 +12,10 @@ const GeneticCities = () => {
     const algorithmDataContext = useContext(AlgorithmDataContext)
 
     const onClickHandler = (e) => {
-        e.preventDefault()
     };
+    useEffect(() => {
 
+    })
     return (
         <>
             <CitiesStage onClickHandler={onClickHandler}/>

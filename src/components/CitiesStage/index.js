@@ -4,6 +4,8 @@ import {AppParametersContext} from "../../storage/AppParameters";
 import {Circle, Layer, Stage, Text} from "react-konva";
 import {CitiesCanvasContext, citiesCanvasResizeAction} from "../../storage/CitiesCanvas";
 import {AlgorithmDataContext} from "../../storage/AlgorithmData";
+import CitiesConnection from "../CitiesConnection";
+import {CITIES} from "../../config";
 
 const CitiesStage = ({onClickHandler}) => {
     const appStatusContext = useContext(AppStatusContext)
@@ -23,6 +25,13 @@ const CitiesStage = ({onClickHandler}) => {
         return () => window.removeEventListener('resize', checkSize);
     }, []);
 
+    const serializeCity = (city) => {
+        return {
+            x: city.position.x * citiesCanvasContext.state.width,
+            y: city.position.y * citiesCanvasContext.state.height
+        }
+    }
+    console.log(citiesCanvasContext.state.width, CITIES.radiusScale, appParametersContext.state.cities)
     return (
         <>
             <Stage
@@ -45,6 +54,43 @@ const CitiesStage = ({onClickHandler}) => {
                         })
                     }
                 </Layer>
+                {
+                    algorithmDataContext.state.ways.map(way => {
+                        return (
+                            <Layer>
+                                {
+                                    way.cities.map((city, index) => {
+                                        switch (index) {
+                                            case 0:
+                                                return (
+                                                    <>
+                                                    </>
+                                                )
+                                            case way.length - 1:
+                                                return (
+                                                    <CitiesConnection
+                                                        radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
+                                                        city1={serializeCity(city)}
+                                                        city2={serializeCity(way.cities[0])}
+                                                        color={'green'}
+                                                    />
+                                                )
+                                            default:
+                                                return (
+                                                    <CitiesConnection
+                                                        radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
+                                                        city1={serializeCity(city)}
+                                                        city2={serializeCity(way.cities[index - 1])}
+                                                        color={'green'}
+                                                    />
+                                                )
+                                        }
+                                    })
+                                }
+                            </Layer>
+                        )
+                    })
+                }
             </Stage>
         </>
     )

@@ -30,17 +30,13 @@ const AppWrapper = () => {
     return (
         <>
             <AppStatusContext.Provider
-                value={{state: appStatusState, dispatch: appStatusDispatch}}
-            >
+                value={{state: appStatusState, dispatch: appStatusDispatch}}>
                 <AppParametersContext.Provider
-                    value={{state: appParametersState, dispatch: appParametersDispatch}}
-                >
+                    value={{state: appParametersState, dispatch: appParametersDispatch}}>
                     <CitiesCanvasContext.Provider
-                        value={{state: citiesCanvasState, dispatch: citiesCanvasDispatch}}
-                    >
+                        value={{state: citiesCanvasState, dispatch: citiesCanvasDispatch}}>
                         <AlgorithmDataContext.Provider
-                            value={{state: algorithmDataState, dispatch: algorithmDataDispatch}}
-                        >
+                            value={{state: algorithmDataState, dispatch: algorithmDataDispatch}}>
                             <App/>
                         </AlgorithmDataContext.Provider>
                     </CitiesCanvasContext.Provider>

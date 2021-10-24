@@ -1,21 +1,46 @@
 import React, {useCallback, useContext} from 'react'
 import {useFormik} from 'formik';
+import {v4 as uuidv4} from 'uuid';
 import {
+    appCreateCitiesAction,
     AppStatusContext,
     appSubmitParametersAction
 } from "../../storage/AppStatus";
 import {
     AppParametersContext,
     CONFIG as appParametersConfig,
-    INPUT_TYPES,
-    updateAppParameters
+    INPUT_TYPES, NAMES,
+    updateAppParameters, VALUES
 } from "../../storage/AppParameters";
+import {CITIES} from "../../config";
+import {getRandomArbitrary, shuffleArray} from "../../utils";
+import {AlgorithmDataContext, createCitiesAction, createWayAction} from "../../storage/AlgorithmData";
 
 import('./index.css')
 
 const ParametersForm = () => {
     const appStatusContext = useContext(AppStatusContext)
     const appParametersContext = useContext(AppParametersContext)
+    const algorithmDataContext = useContext(AlgorithmDataContext)
+    const createRandomCity = ({index, citiesNum}) => {
+        const city = {
+            id: uuidv4(),
+            position: {
+                x: getRandomArbitrary(Math.floor(1 / (citiesNum * 4) * 100), 100 - Math.floor(1 / (citiesNum * 4) * 100)) / 100,
+                y: getRandomArbitrary(Math.floor(1 / (citiesNum * 4) * 100), 100 - Math.floor(1 / (citiesNum * 4) * 100)) / 100
+            },
+            size: {
+                radius: CITIES.radiusScale / citiesNum,
+            },
+            color: CITIES.color,
+            name: index
+        }
+        if (index === 0) {
+            city.start = true
+            city.color = CITIES.start.color
+        }
+        return city
+    }
     const initialValues = useCallback(() => {
         const values = {}
         Object.keys(appParametersContext.state).forEach(field => {
@@ -42,7 +67,34 @@ const ParametersForm = () => {
         initialValues: initialValues(),
         validate: validateValues,
         onSubmit: values => {
-            console.log(values)
+            if (values[NAMES.cities_creation] === VALUES.cities_creation.RANDOM) {
+                const citiesNum = getRandomArbitrary(CITIES.min, CITIES.max)
+                const cities = []
+                for (let i = 0; i < citiesNum; i++) {
+                    let newCity = createRandomCity({index: i, citiesNum: citiesNum})
+                    let xP = (newCity.position.x / newCity.size.radius)
+                    let yP = (newCity.position.y / newCity.size.radius)
+                    let radiusP = (1 / newCity.size.radius) - 1
+                    while (xP <= 1 || xP >= radiusP || yP <= 1 || yP >= radiusP) {
+                        newCity = createRandomCity({index: i, citiesNum: citiesNum})
+                        xP = (newCity.position.x / newCity.size.radius)
+                        yP = (newCity.position.y / newCity.size.radius)
+                    }
+                    cities.push(newCity)
+                }
+                values.cities = cities
+                algorithmDataContext.dispatch(createCitiesAction({
+                    cities: values.cities
+                }))
+                algorithmDataContext.dispatch(createWayAction({
+                    way: {
+                        cities: values.cities.filter(city => city?.start).concat(shuffleArray(values.cities.filter(city => !city?.start))),
+                        color: 'green'
+                    }
+                }))
+                appStatusContext.dispatch(appCreateCitiesAction)
+                return
+            }
             appParametersContext.dispatch(updateAppParameters(values))
             appStatusContext.dispatch(appSubmitParametersAction)
         },
