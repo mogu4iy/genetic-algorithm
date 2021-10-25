@@ -65,19 +65,55 @@ export const panmixia = ({population}) => {
     return parentNodes
 }
 
+const buildCycles = ({way1, way2, citiesNum}) => {
+    let cycle1 = {}
+    let cycle2 = {}
+    let index = 0
+    while (way1[index].start) {
+        index++
+    }
+    let cycleStart = way1[index]
+    while (Object.values(cycle1).filter(city => city.name === cycleStart.name).length === 0) {
+        cycle1[index] = way2[index]
+        index = way1.indexOf(way1.filter(city => city.name === way2[index].name)[0])
+    }
+    index = 0
+    while ((way2[index].start || Object.values(cycle1).includes(way2[index])) && index < citiesNum - 1) {
+        index++
+    }
+    cycleStart = way2[index]
+    while (Object.values(cycle2).filter(city => city.name === cycleStart.name).length === 0) {
+        cycle2[index] = way1[index]
+        index = way2.indexOf(way2.filter(city => city.name === way1[index].name)[0])
+    }
+    return {
+        cycle1,
+        cycle2
+    }
+}
+
 const crossoverWays = ({way1, way2, citiesNum, mutateProbability}) => {
-    const crossoverIndex = getRandomInt(1, citiesNum - 2)
+    let newWay1 = JSON.parse(JSON.stringify(way1))
+    let newWay2 = JSON.parse(JSON.stringify(way2))
+    const {cycle1, cycle2} = buildCycles({way2, way1, citiesNum})
+    for (let i in cycle1) {
+        newWay1[i] = cycle1[i]
+    }
+    for (let i in cycle2) {
+        newWay2[i] = cycle2[i]
+    }
     return [
         mutate({
-            way: way2.slice(0, crossoverIndex).concat(way1.slice(crossoverIndex)),
+            way: newWay1,
             mutateProbability
         }),
         mutate({
-            way: way1.slice(0, crossoverIndex).concat(way2.slice(crossoverIndex)),
+            way: newWay2,
             mutateProbability
         })
     ]
 }
+
 
 export const crossover = ({population, citiesNum, mutateProbability}) => {
     let newPopulation = []

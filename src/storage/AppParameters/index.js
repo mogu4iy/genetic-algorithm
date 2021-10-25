@@ -56,9 +56,6 @@ export const CONFIG = {
         name: NAMES.cities,
         value: VALUES.cities,
         regex: REGEX.NUMBER,
-        case: {
-            [NAMES.cities_creation]: VALUES.cities_creation.CUSTOM
-        }
     },
     mutation: {
         inputType: INPUT_TYPES.NUMBER,

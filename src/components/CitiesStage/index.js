@@ -68,13 +68,22 @@ const CitiesStage = ({onClickHandler}) => {
                                                 )
                                             case way.way.length - 1:
                                                 return (
-                                                    <CitiesConnection
-                                                        radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
-                                                        city1={serializeCity(city)}
-                                                        city2={serializeCity(way.way[0])}
-                                                        color={way.last ? WAYS.best.color : way.color}
-                                                        strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
-                                                    />
+                                                    <>
+                                                        <CitiesConnection
+                                                            radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
+                                                            city1={serializeCity(way.way[index - 1])}
+                                                            city2={serializeCity(city)}
+                                                            color={way.last ? WAYS.best.color : way.color}
+                                                            strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
+                                                        />
+                                                        <CitiesConnection
+                                                            radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
+                                                            city1={serializeCity(city)}
+                                                            city2={serializeCity(way.way[0])}
+                                                            color={way.last ? WAYS.best.color : way.color}
+                                                            strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
+                                                        />
+                                                    </>
                                                 )
                                             default:
                                                 return (

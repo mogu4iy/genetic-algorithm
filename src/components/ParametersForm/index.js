@@ -76,7 +76,7 @@ const ParametersForm = () => {
         onSubmit: values => {
             if (values[NAMES.cities_creation] === VALUES.cities_creation.RANDOM) {
                 appParametersContext.dispatch(updateAppParameters(values))
-                const citiesNum = getRandomInt(CITIES.min, CITIES.max)
+                const citiesNum = values.cities
                 const cities = []
                 for (let i = 0; i < citiesNum; i++) {
                     let newCity = createRandomCity({index: i, citiesNum: citiesNum})
@@ -152,7 +152,7 @@ const ParametersForm = () => {
                         return (
                             <div key={field.name}>
                                 {
-                                    field.case ? (
+                                    field?.case ? (
                                         Object.keys(field.case).map(fieldCase => {
                                             return formik.values[fieldCase] === field.case[fieldCase]
                                         }).every(value => value) && (

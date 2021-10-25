@@ -54,7 +54,6 @@ const GeneticCities = () => {
             appStatusContext.dispatch(appFinishAction)
             return
         }
-        console.log(appParametersContext.state.iterations, iteration)
         setIteration()
         if (algorithmDataContext.state.populations.length === 0) {
             console.log('initial population')
