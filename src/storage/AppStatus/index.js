@@ -9,10 +9,10 @@ export const ACTIONS = {
 }
 
 export const STATUS = {
-    DISABLED: 'disabled',
-    PARAMETERS_SUBMITTED: 'parameters_submitted',
-    CITIES_CREATED: 'cities_created',
-    FINISHED: 'finished'
+    DISABLED: 'disabled', // display parameters form
+    PARAMETERS_SUBMITTED: 'parameters_submitted', // generate random cities or create custom
+    CITIES_CREATED: 'cities_created', // start algorithm
+    FINISHED: 'finished' // display best way
 }
 
 export const appStatusInitialState = {
@@ -42,4 +42,7 @@ export const appSubmitParametersAction = {
 
 export const appCreateCitiesAction = {
     type: ACTIONS.CREATE_CITIES,
+}
+export const appFinishAction = {
+    type: ACTIONS.FINISH,
 }

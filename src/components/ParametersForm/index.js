@@ -12,9 +12,16 @@ import {
     INPUT_TYPES, NAMES,
     updateAppParameters, VALUES
 } from "../../storage/AppParameters";
-import {CITIES} from "../../config";
-import {getRandomArbitrary, shuffleArray} from "../../utils";
-import {AlgorithmDataContext, createCitiesAction, createWayAction} from "../../storage/AlgorithmData";
+import {
+    CITIES
+} from "../../config";
+import {
+    getRandomInt
+} from "../../utils";
+import {
+    AlgorithmDataContext,
+    createCitiesAction
+} from "../../storage/AlgorithmData";
 
 import('./index.css')
 
@@ -26,8 +33,8 @@ const ParametersForm = () => {
         const city = {
             id: uuidv4(),
             position: {
-                x: getRandomArbitrary(Math.floor(1 / (citiesNum * 4) * 100), 100 - Math.floor(1 / (citiesNum * 4) * 100)) / 100,
-                y: getRandomArbitrary(Math.floor(1 / (citiesNum * 4) * 100), 100 - Math.floor(1 / (citiesNum * 4) * 100)) / 100
+                x: getRandomInt(Math.floor(1 / (citiesNum * 4) * 100), 100 - Math.floor(1 / (citiesNum * 4) * 100)) / 100,
+                y: getRandomInt(Math.floor(1 / (citiesNum * 4) * 100), 100 - Math.floor(1 / (citiesNum * 4) * 100)) / 100
             },
             size: {
                 radius: CITIES.radiusScale / citiesNum,
@@ -47,7 +54,7 @@ const ParametersForm = () => {
             values[field] = appParametersContext.state[field]
         })
         return values
-    }, [])
+    }, [appParametersContext.state])
     const validateValues = (values) => {
         const errors = {}
         Object.values(appParametersConfig).forEach(field => {
@@ -68,7 +75,8 @@ const ParametersForm = () => {
         validate: validateValues,
         onSubmit: values => {
             if (values[NAMES.cities_creation] === VALUES.cities_creation.RANDOM) {
-                const citiesNum = getRandomArbitrary(CITIES.min, CITIES.max)
+                appParametersContext.dispatch(updateAppParameters(values))
+                const citiesNum = getRandomInt(CITIES.min, CITIES.max)
                 const cities = []
                 for (let i = 0; i < citiesNum; i++) {
                     let newCity = createRandomCity({index: i, citiesNum: citiesNum})
@@ -85,12 +93,6 @@ const ParametersForm = () => {
                 values.cities = cities
                 algorithmDataContext.dispatch(createCitiesAction({
                     cities: values.cities
-                }))
-                algorithmDataContext.dispatch(createWayAction({
-                    way: {
-                        cities: values.cities.filter(city => city?.start).concat(shuffleArray(values.cities.filter(city => !city?.start))),
-                        color: 'green'
-                    }
                 }))
                 appStatusContext.dispatch(appCreateCitiesAction)
                 return
@@ -132,7 +134,10 @@ const ParametersForm = () => {
                     >
                         {field.options.map(option => {
                             return (
-                                <option value={option}>{option}</option>
+                                <option
+                                    value={option}
+                                    key={option}
+                                >{option}</option>
                             )
                         })}
                     </select>
@@ -145,7 +150,7 @@ const ParametersForm = () => {
                 {
                     Object.values(appParametersConfig).map(field => {
                         return (
-                            <>
+                            <div key={field.name}>
                                 {
                                     field.case ? (
                                         Object.keys(field.case).map(fieldCase => {
@@ -172,7 +177,7 @@ const ParametersForm = () => {
                                         </div>
                                     )
                                 }
-                            </>
+                            </div>
                         )
                     })
                 }

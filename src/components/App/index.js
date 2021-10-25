@@ -10,7 +10,6 @@ import CreateCitiesStage from "../CreateCitiesStage";
 
 const App = () => {
     const appStatusContext = useContext(AppStatusContext)
-
     const renderSwitch = () => {
         switch (appStatusContext.state.status) {
             case appStatus.DISABLED:

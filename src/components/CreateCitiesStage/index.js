@@ -1,5 +1,4 @@
 import React, {useContext, useReducer} from "react";
-import {v4 as uuidv4} from 'uuid';
 import {
     appCreateCitiesAction,
     AppStatusContext
@@ -25,7 +24,7 @@ const CreateCitiesStage = () => {
     const algorithmDataContext = useContext(AlgorithmDataContext)
     const [cities, setNewCity] = useReducer(state => {
             const newState = state + 1
-            if (appParametersContext.state.cities === newState) {
+            if (appParametersContext.state.cities === newState-1) {
                 appStatusContext.dispatch(appCreateCitiesAction)
             }
             return newState
@@ -34,7 +33,6 @@ const CreateCitiesStage = () => {
 
     const createCity = ({x, y}) => {
         const city = {
-            id: uuidv4(),
             position: {
                 x: x / citiesCanvasContext.state.width,
                 y: y / citiesCanvasContext.state.height
@@ -59,7 +57,7 @@ const CreateCitiesStage = () => {
         const xP = ((x / citiesCanvasContext.state.width) / (CITIES.radiusScale / appParametersContext.state.cities))
         const yP = ((y / citiesCanvasContext.state.height) / (CITIES.radiusScale / appParametersContext.state.cities))
         let radiusP = (1 / (CITIES.radiusScale / appParametersContext.state.cities)) - 1
-        if (xP <= 1 || xP >= radiusP || yP <= 1 || yP >= radiusP){
+        if (xP <= 1 || xP >= radiusP || yP <= 1 || yP >= radiusP) {
             return
         }
         algorithmDataContext.dispatch(createCityAction({

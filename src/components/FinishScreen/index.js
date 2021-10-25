@@ -1,9 +1,11 @@
 import React from 'react'
+import CitiesStage from "../CitiesStage";
 
 const FinishScreen = () => {
     return (
         <>
-            Finish
+            <CitiesStage onClickHandler={() => {
+            }}/>
         </>
     )
 }

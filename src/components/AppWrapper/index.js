@@ -21,6 +21,7 @@ import {
 } from '../../storage/AlgorithmData'
 import App from "../App";
 
+// Init all app reducers (state storages)
 const AppWrapper = () => {
     const [appStatusState, appStatusDispatch] = useReducer(appStatusReducer, appStatusInitialState)
     const [appParametersState, appParametersDispatch] = useReducer(appParametersReducer, appParametersInitialState)

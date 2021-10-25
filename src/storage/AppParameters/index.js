@@ -25,7 +25,7 @@ export const NAMES = {
     mutation: 'mutation'
 }
 export const VALUES = {
-    iterations: 10,
+    iterations: 2,
     cities_creation: {
         RANDOM: 'random',
         CUSTOM: 'custom'
@@ -70,10 +70,10 @@ export const CONFIG = {
 }
 
 export const appParametersInitialState = {
-    iterations: VALUES.iterations,
-    cities_creation: VALUES.cities_creation.RANDOM,
-    cities: VALUES.cities,
-    mutation: VALUES.mutation,
+    iterations: VALUES.iterations, // count of iterations for GA
+    cities_creation: VALUES.cities_creation.RANDOM, // type of creation (random or custom)
+    cities: VALUES.cities, // count of cities, that we need to create
+    mutation: VALUES.mutation // percentage of mutations
 }
 
 export const appParametersReducer = (state, action) => {

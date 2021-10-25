@@ -5,7 +5,7 @@ import {Circle, Layer, Stage, Text} from "react-konva";
 import {CitiesCanvasContext, citiesCanvasResizeAction} from "../../storage/CitiesCanvas";
 import {AlgorithmDataContext} from "../../storage/AlgorithmData";
 import CitiesConnection from "../CitiesConnection";
-import {CITIES} from "../../config";
+import {CITIES, WAYS} from "../../config";
 
 const CitiesStage = ({onClickHandler}) => {
     const appStatusContext = useContext(AppStatusContext)
@@ -19,7 +19,6 @@ const CitiesStage = ({onClickHandler}) => {
             height: window.innerHeight,
         }))
     };
-
     useEffect(() => {
         window.addEventListener('resize', checkSize);
         return () => window.removeEventListener('resize', checkSize);
@@ -31,7 +30,7 @@ const CitiesStage = ({onClickHandler}) => {
             y: city.position.y * citiesCanvasContext.state.height
         }
     }
-    console.log(citiesCanvasContext.state.width, CITIES.radiusScale, appParametersContext.state.cities)
+
     return (
         <>
             <Stage
@@ -45,6 +44,7 @@ const CitiesStage = ({onClickHandler}) => {
                         algorithmDataContext.state.cities.map(city => {
                             return (
                                 <Circle
+                                    key={city.name}
                                     fill={city.color}
                                     radius={city.size.radius * citiesCanvasContext.state.width}
                                     x={city.position.x * citiesCanvasContext.state.width}
@@ -59,29 +59,31 @@ const CitiesStage = ({onClickHandler}) => {
                         return (
                             <Layer>
                                 {
-                                    way.cities.map((city, index) => {
+                                    way.way.map((city, index) => {
                                         switch (index) {
                                             case 0:
                                                 return (
                                                     <>
                                                     </>
                                                 )
-                                            case way.length - 1:
+                                            case way.way.length - 1:
                                                 return (
                                                     <CitiesConnection
                                                         radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
                                                         city1={serializeCity(city)}
-                                                        city2={serializeCity(way.cities[0])}
-                                                        color={'green'}
+                                                        city2={serializeCity(way.way[0])}
+                                                        color={way.last ? WAYS.best.color : way.color}
+                                                        strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
                                                     />
                                                 )
                                             default:
                                                 return (
                                                     <CitiesConnection
                                                         radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
-                                                        city1={serializeCity(city)}
-                                                        city2={serializeCity(way.cities[index - 1])}
-                                                        color={'green'}
+                                                        city1={serializeCity(way.way[index - 1])}
+                                                        city2={serializeCity(city)}
+                                                        color={way.last ? WAYS.best.color : way.color}
+                                                        strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
                                                     />
                                                 )
                                         }
