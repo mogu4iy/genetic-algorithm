@@ -24,7 +24,7 @@ const CreateCitiesStage = () => {
     const algorithmDataContext = useContext(AlgorithmDataContext)
     const [cities, setNewCity] = useReducer(state => {
             const newState = state + 1
-            if (appParametersContext.state.cities === newState-2) {
+            if (appParametersContext.state.cities === newState) {
                 appStatusContext.dispatch(appCreateCitiesAction)
             }
             return newState
