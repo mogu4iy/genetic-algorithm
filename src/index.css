@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+html {
+    font-size: 16px;
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow: hidden;
+}
+
+ul, li {
+    list-style: none;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
