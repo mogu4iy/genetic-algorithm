@@ -4,7 +4,7 @@ import {
     generateRandomColor,
     crossover,
     generateNewWay,
-    getBestWay
+    getBestWay, equals
 } from "../../utils";
 import {
     appFinishAction,
@@ -34,13 +34,17 @@ const GeneticCities = () => {
             newColor = generateRandomColor()
         }
         for (let i = 0; i < POPULATION.count; i++) {
-            newPopulation.push(generateNewWay({
+            let newWay = generateNewWay({
                 cities: algorithmDataContext.state.cities,
-            }))
+            })
+            while (newPopulation.some((way) => equals(way, newWay))) {
+                newWay = generateNewWay({
+                    cities: algorithmDataContext.state.cities,
+                })
+            }
+            newPopulation.push(newWay)
         }
-        const {way, score} = getBestWay({
-            population: newPopulation
-        })
+        const {way, score} = getBestWay(newPopulation)
         algorithmDataContext.dispatch(createPopulationAction({
             population: newPopulation,
             way: way,
@@ -69,18 +73,16 @@ const GeneticCities = () => {
             color: newColor,
             citiesNum: appParametersContext.state.cities,
         }) // crossover new population
-        const {way, score} = getBestWay({
-            population: newPopulation
-        }) // find best population way
-        setTimeout(() => {
-            algorithmDataContext.dispatch(createPopulationAction({
-                population: newPopulation,
-                way: way,
-                score: score,
-                color: newColor,
-                last: iteration === appParametersContext.state.iterations - 1
-            }))
-        }, 1000) // timeout for best view
+        const {way, score} = getBestWay(newPopulation) // find best population way
+        // setTimeout(() => {
+        algorithmDataContext.dispatch(createPopulationAction({
+            population: newPopulation,
+            way: way,
+            score: score,
+            color: newColor,
+            last: iteration === appParametersContext.state.iterations - 1
+        }))
+        // }, 0) // timeout for best view
     }, [algorithmDataContext.state])
 
     return (

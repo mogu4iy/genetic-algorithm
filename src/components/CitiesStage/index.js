@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, {useContext, useEffect, useRef} from "react";
 import {AppStatusContext} from "../../storage/AppStatus";
 import {AppParametersContext} from "../../storage/AppParameters";
 import {Circle, Layer, Stage, Text} from "react-konva";
@@ -12,6 +12,7 @@ const CitiesStage = ({onClickHandler}) => {
     const appParametersContext = useContext(AppParametersContext)
     const citiesCanvasContext = useContext(CitiesCanvasContext)
     const algorithmDataContext = useContext(AlgorithmDataContext)
+    const stageRef = useRef()
 
     const checkSize = () => {
         citiesCanvasContext.dispatch(citiesCanvasResizeAction({
@@ -30,6 +31,25 @@ const CitiesStage = ({onClickHandler}) => {
             y: city.position.y * citiesCanvasContext.state.height
         }
     }
+    const touchStartHandler = () => {
+        console.log('Touchstart circle');
+
+    }
+    const touchEndHandler = (event) => {
+        console.log('Touchend circle');
+
+    }
+
+    useEffect(() => {
+        stageRef.current.addEventListener('touchstart', touchStartHandler);
+        stageRef.current.addEventListener('touchend', touchEndHandler);
+        return () => {
+            if (stageRef.current){
+                stageRef.current.removeEventListener('touchstart', touchStartHandler);
+                stageRef.current.removeEventListener('touchend', touchEndHandler);
+            }
+        }
+    })
 
     return (
         <>
@@ -37,7 +57,7 @@ const CitiesStage = ({onClickHandler}) => {
                 width={citiesCanvasContext.state.width}
                 height={citiesCanvasContext.state.height}
                 onClick={onClickHandler}
-                onTap={onClickHandler}
+                ref={stageRef}
             >
                 <Layer>
                     {
@@ -53,22 +73,39 @@ const CitiesStage = ({onClickHandler}) => {
                             )
                         })
                     }
-                </Layer>
-                {
-                    algorithmDataContext.state.ways.map(way => {
-                        return (
-                            <Layer>
-                                {
-                                    way.way.map((city, index) => {
-                                        switch (index) {
-                                            case 0:
-                                                return (
-                                                    <>
-                                                    </>
-                                                )
-                                            case way.way.length - 1:
-                                                return (
-                                                    <>
+                    {
+                        algorithmDataContext.state.ways.map(way => {
+                            return (
+                                <>
+                                    {
+                                        way.way.map((city, index) => {
+                                            switch (index) {
+                                                case 0:
+                                                    return (
+                                                        <>
+                                                        </>
+                                                    )
+                                                case way.way.length - 1:
+                                                    return (
+                                                        <>
+                                                            <CitiesConnection
+                                                                radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
+                                                                city1={serializeCity(way.way[index - 1])}
+                                                                city2={serializeCity(city)}
+                                                                color={way.last ? WAYS.best.color : way.color}
+                                                                strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
+                                                            />
+                                                            <CitiesConnection
+                                                                radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
+                                                                city1={serializeCity(city)}
+                                                                city2={serializeCity(way.way[0])}
+                                                                color={way.last ? WAYS.best.color : way.color}
+                                                                strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
+                                                            />
+                                                        </>
+                                                    )
+                                                default:
+                                                    return (
                                                         <CitiesConnection
                                                             radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
                                                             city1={serializeCity(way.way[index - 1])}
@@ -76,32 +113,15 @@ const CitiesStage = ({onClickHandler}) => {
                                                             color={way.last ? WAYS.best.color : way.color}
                                                             strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
                                                         />
-                                                        <CitiesConnection
-                                                            radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
-                                                            city1={serializeCity(city)}
-                                                            city2={serializeCity(way.way[0])}
-                                                            color={way.last ? WAYS.best.color : way.color}
-                                                            strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
-                                                        />
-                                                    </>
-                                                )
-                                            default:
-                                                return (
-                                                    <CitiesConnection
-                                                        radius={(citiesCanvasContext.state.width * CITIES.radiusScale) / appParametersContext.state.cities}
-                                                        city1={serializeCity(way.way[index - 1])}
-                                                        city2={serializeCity(city)}
-                                                        color={way.last ? WAYS.best.color : way.color}
-                                                        strokeWidth={way.last ? WAYS.best.strokeWidth : WAYS.strokeWidth}
-                                                    />
-                                                )
-                                        }
-                                    })
-                                }
-                            </Layer>
-                        )
-                    })
-                }
+                                                    )
+                                            }
+                                        })
+                                    }
+                                </>
+                            )
+                        })
+                    }
+                </Layer>
             </Stage>
         </>
     )

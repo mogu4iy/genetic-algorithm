@@ -34,7 +34,11 @@ export const algorithmDataReducer = (state, action) => {
                 last: action.data.last
             })
             newState.scores.push(action.data.score)
-            console.log(`${new Array(25).fill('-').join('')}\nbest population way score : ${action.data.score}\npopulation color : ${action.data.color}}`)
+            console.log([
+                new Array(25).fill('-').join(''),
+                `best population way distance : ${action.data.score}`,
+                `population color : ${action.data.color}`,
+                `population length: ${action.data.population.length}`].join('\n'))
             return newState
         default:
             return newState

@@ -25,19 +25,62 @@ export function generateRandomColor() {
     return '#000000'.slice(0, -color.length) + color;
 }
 
+export function getMousePos(canvas, evt) {
+    let rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
 // ALGORITHM
 
+export function equals(array1, array2) {
+    // if the other array is a falsy value, return
+    if (!array1 || !array2)
+        return false;
 
-export const getBestWay = ({population}) => {
+    // compare lengths - can save a lot of time
+    if (array2.length !== array1.length)
+        return false;
+
+    for (let i = 0, l = array2.length; i < l; i++) {
+        // Check if we have nested arrays
+        if (array2[i] instanceof Array && array1[i] instanceof Array) {
+            // recurse into the nested arrays
+            if (!equals(array1[i], array2[i]))
+                return false;
+        } else if (array2[i].name !== array1[i].name) {
+            return false;
+        }
+    }
+    return true;
+}
+
+export const getBestWay = (population) => {
     let bestDistance = null
     let bestWay = null
     for (let way of population) {
         let distance = 0
         way.forEach((city, index) => {
             if (index !== 0 && index !== way.length - 1) {
-                distance += getDistanceBetweenCities(city, way[index - 1])
+                distance += getDistanceBetweenCities(
+                    {
+                        x: city.position.x,
+                        y: city.position.y
+                    }, {
+                        x: way[index - 1].position.x,
+                        y: way[index - 1].position.y
+                    })
             } else if (index === way.length - 1) {
-                distance += getDistanceBetweenCities(city, way[0])
+                distance += getDistanceBetweenCities(
+                    {
+                        x: city.position.x,
+                        y: city.position.y
+                    }, {
+                        x: way[0].position.x,
+                        y: way[0].position.y
+                    })
             }
         })
         if (!bestDistance || (distance < bestDistance)) {
@@ -51,7 +94,7 @@ export const getBestWay = ({population}) => {
     }
 }
 export const getDistanceBetweenCities = (c1, c2) => {
-    return Math.sqrt((c1.position.x - c2.position.x) ** 2 + (c1.position.y - c2.position.y) ** 2)
+    return Math.sqrt((c1.x - c2.x) ** 2 + (c1.y - c2.y) ** 2)
 }
 export const generateNewWay = ({cities}) => {
     return cities.filter(city => city?.start).concat(shuffleArray(cities.filter(city => !city?.start)))
@@ -102,16 +145,16 @@ const crossoverWays = ({way1, way2, citiesNum, mutateProbability}) => {
     for (let i in cycle2) {
         newWay2[i] = cycle2[i]
     }
-    return [
-        mutate({
-            way: newWay1,
-            mutateProbability
-        }),
-        mutate({
-            way: newWay2,
-            mutateProbability
-        })
-    ]
+    newWay1 = mutate({
+        way: newWay1,
+        mutateProbability
+    })
+    newWay2 = mutate({
+        way: newWay2,
+        mutateProbability
+    })
+    const bestWay = getBestWay([newWay1, newWay2])
+    return [bestWay.way]
 }
 
 
@@ -122,6 +165,9 @@ export const crossover = ({population, citiesNum, mutateProbability}) => {
         if (i === selectOperator[i]) {
             continue
         }
+        if (equals(population[i], population[selectOperator[i]])) {
+            continue
+        }
         const newWays = crossoverWays({
             way1: population[i],
             way2: population[selectOperator[i]],
@@ -130,6 +176,7 @@ export const crossover = ({population, citiesNum, mutateProbability}) => {
         })
         newPopulation = newPopulation.concat(newWays)
     }
+    console.log(newPopulation.length)
     return newPopulation
 }
 

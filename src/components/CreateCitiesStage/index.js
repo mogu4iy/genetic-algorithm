@@ -22,8 +22,13 @@ const CreateCitiesStage = () => {
     const appParametersContext = useContext(AppParametersContext)
     const citiesCanvasContext = useContext(CitiesCanvasContext)
     const algorithmDataContext = useContext(AlgorithmDataContext)
-    const [cities, setNewCity] = useReducer(state => {
+    const [cities, setNewCity] = useReducer((state, action) => {
+            console.log(action.event)
+            const eventPosition = action.event.target.getStage().getPointerPosition()
             const newState = state + 1
+            algorithmDataContext.dispatch(createCityAction({
+                city: createCity({x: eventPosition.x, y: eventPosition.y})
+            }))
             if (appParametersContext.state.cities === newState) {
                 appStatusContext.dispatch(appCreateCitiesAction)
             }
@@ -31,7 +36,7 @@ const CreateCitiesStage = () => {
         }, 0
     )
 
-    const createCity = ({x, y}) => {
+    function createCity({x, y}) {
         const city = {
             position: {
                 x: x / citiesCanvasContext.state.width,
@@ -43,6 +48,7 @@ const CreateCitiesStage = () => {
             color: CITIES.color,
             name: algorithmDataContext.state.cities.length
         }
+        // console.log(algorithmDataContext.state.cities.length)
         if (algorithmDataContext.state.cities.length === 0) {
             city.start = true
             city.color = CITIES.start.color
@@ -60,10 +66,7 @@ const CreateCitiesStage = () => {
         if (xP <= 1 || xP >= radiusP || yP <= 1 || yP >= radiusP) {
             return
         }
-        algorithmDataContext.dispatch(createCityAction({
-            city: createCity({x: eventPosition.x, y: eventPosition.y})
-        }))
-        setNewCity()
+        setNewCity({event: e})
     };
 
     return (

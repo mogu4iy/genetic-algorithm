@@ -9,8 +9,10 @@ import {
 import {
     AppParametersContext,
     CONFIG as appParametersConfig,
-    INPUT_TYPES, NAMES,
-    updateAppParameters, VALUES
+    INPUT_TYPES,
+    NAMES,
+    updateAppParameters,
+    VALUES
 } from "../../storage/AppParameters";
 import {
     CITIES
@@ -22,7 +24,6 @@ import {
     AlgorithmDataContext,
     createCitiesAction
 } from "../../storage/AlgorithmData";
-
 import('./index.css')
 
 const ParametersForm = () => {
