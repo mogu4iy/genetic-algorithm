@@ -1,11 +1,14 @@
 export const CITIES = {
     color: 'blue',
-    min: 30,
-    max: 40,
+    min: 3,
+    max: 30,
     start: {
         color: 'yellow'
     },
     radiusScale: 1 / 4
+}
+export const ALGORITHM = {
+    overFitting: 3
 }
 export const CONNECTIONS = {}
 export const POPULATION = {

@@ -88,6 +88,9 @@ export const getBestWay = (population) => {
             bestWay = way
         }
     }
+    if (!bestDistance){
+        return false
+    }
     return {
         way: bestWay,
         score: bestDistance
@@ -176,7 +179,6 @@ export const crossover = ({population, citiesNum, mutateProbability}) => {
         })
         newPopulation = newPopulation.concat(newWays)
     }
-    console.log(newPopulation.length)
     return newPopulation
 }
 
@@ -195,4 +197,8 @@ export const mutate = ({way, mutateProbability}) => {
     newWay[index1] = way[index2]
     newWay[index2] = way[index1]
     return newWay
+}
+
+export function factorial(n) {
+    return (n !== 1) ? n * factorial(n - 1) : 1;
 }

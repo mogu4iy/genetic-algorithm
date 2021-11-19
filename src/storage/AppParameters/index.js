@@ -25,7 +25,7 @@ export const NAMES = {
     mutation: 'mutation'
 }
 export const VALUES = {
-    iterations: 2,
+    iterations: 10,
     cities_creation: {
         RANDOM: 'random',
         CUSTOM: 'custom'

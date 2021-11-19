@@ -24,6 +24,7 @@ import {
     AlgorithmDataContext,
     createCitiesAction
 } from "../../storage/AlgorithmData";
+
 import('./index.css')
 
 const ParametersForm = () => {
@@ -151,7 +152,7 @@ const ParametersForm = () => {
                 {
                     Object.values(appParametersConfig).map(field => {
                         return (
-                            <div key={field.name}>
+                            <>
                                 {
                                     field?.case ? (
                                         Object.keys(field.case).map(fieldCase => {
@@ -178,11 +179,13 @@ const ParametersForm = () => {
                                         </div>
                                     )
                                 }
-                            </div>
+                            </>
                         )
                     })
                 }
-                <button type="submit">Start</button>
+                <div className='parameters-form-item'>
+                    <button type="submit" className={'parameters-form-button'}>Start</button>
+                </div>
             </form>
         </>
     )

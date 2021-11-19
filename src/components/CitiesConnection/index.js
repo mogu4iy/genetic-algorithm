@@ -9,7 +9,7 @@ const CitiesConnection = ({city1, city2, color, radius, strokeWidth}) => {
 
     let arrowRadius = - radius * 1.5
     if (radius > getDistanceBetweenCities({x: city1.x, y: city1.y}, {x: city2.x, y: city2.y})){
-        console.log('radius')
+        console.log('')
     }
 
     const arrowStart = {

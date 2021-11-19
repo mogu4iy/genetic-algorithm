@@ -1,13 +1,41 @@
-.parameters-form{
+.parameters-form {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
+    background: lavender;
+    border-radius: 15px;
 }
-.parameters-form-item{
+
+.parameters-form-item {
     padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+}
+
+.parameters-form-item label {
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+.parameters-form-item input {
+    border: 2px solid black;
+    border-radius: 15px;
+    outline: none;
+    padding: 10px 15px;
+}
+
+.parameters-form-button{
+    cursor: pointer;
+    padding: 10px 40px;
+    font-weight: bold;
+    border-radius: 15px;
+    border: none;
+    outline: none;
 }
